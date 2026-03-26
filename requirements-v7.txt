@@ -1,0 +1,5 @@
+anthropic
+mcp
+selenium
+webdriver-manager
+Pillow

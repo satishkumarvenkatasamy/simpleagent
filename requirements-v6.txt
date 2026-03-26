@@ -1,0 +1,4 @@
+anthropic
+selenium
+webdriver-manager
+Pillow

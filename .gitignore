@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# pdf documents folder
+pdf_documents/
+
+# Data directories (agent-v5)
+.chromadb/
+.chdb/
+
+# Browser automation
+temp_browser_profile/
+mcp_server.log
+browser_automation.log
+screenshot_*.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# API keys
+*.key
+.env
