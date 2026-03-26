@@ -1,0 +1,31 @@
+{
+  "security": {
+    "allowed_domains": [
+      "google.com",
+      "github.com",
+      "stackoverflow.com",
+      "wikipedia.org",
+      "example.com"
+    ],
+    "blocked_domains": [
+      "localhost",
+      "127.0.0.1",
+      "192.168.",
+      "10.0.",
+      "172.16."
+    ],
+    "max_operations_per_minute": 60,
+    "session_timeout_minutes": 45,
+    "enable_screenshots": true,
+    "enable_downloads": false
+  },
+  "browser_settings": {
+    "default_browser": "chrome",
+    "window_size": [1280, 720],
+    "headless": false,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "page_load_timeout": 30,
+    "implicit_wait": 10,
+    "script_timeout": 30
+  }
+}
