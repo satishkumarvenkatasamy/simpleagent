@@ -1,0 +1,10 @@
+anthropic
+httpx
+certifi
+pymupdf
+chromadb
+chdb
+mcp
+selenium
+webdriver-manager
+Pillow

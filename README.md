@@ -14,11 +14,12 @@ A hands-on codebase that teaches how to build AI agents incrementally. Each vers
 | **v5** | Python | 6 structured tools | PDF ingestion (ChromaDB), persistent chat history (chDB) |
 | **v6** | Python | 4 local + 16 browser tools | Browser automation — direct Selenium (no MCP) |
 | **v7** | Python | 4 local + 21 MCP browser tools | Browser automation via MCP server (Selenium) |
+| **v8** | Python | 6 local + 21 MCP browser tools | Full-stack: PDF RAG + chat history + browser via MCP |
 
 ## Prerequisites
 
 - Python 3.13+
-- An Anthropic API key stored at `~/.hc/anthropic.key` (for v1–v7)
+- An Anthropic API key stored at `~/.hc/anthropic.key` (for v1–v8)
 - An OpenAI API key at `~/.hc/openai.key` or `OPENAI_API_KEY` env var (for openai example)
 
 ```bash
@@ -45,11 +46,12 @@ Version 5 has additional dependencies:
 pip3 install -r requirements-v5.txt
 ```
 
-Versions 6–7 (browser automation):
+Versions 6–8 (browser automation):
 
 ```bash
 pip3 install -r requirements-v6.txt   # v6: direct Selenium, no MCP
 pip3 install -r requirements-v7.txt   # v7: adds MCP protocol
+pip3 install -r requirements-v8.txt   # v8: PDF RAG + chat history + MCP browser
 ```
 
 ## Version Details
@@ -355,6 +357,63 @@ You: Go to wikipedia.org and search for "Python programming"
 🤖 I've navigated to Wikipedia and searched for "Python programming"...
 ```
 
+---
+
+### V8 — Full-Stack Agent (PDF RAG + Chat History + Browser via MCP)
+
+**File:** `agent-v8.py`
+
+The most complete version. Combines all features from V5 (PDF knowledge base + persistent chat history) and V7 (browser automation via MCP) into a single agent.
+
+**What's new over V7:**
+- PDF ingestion from `pdf_documents/` into ChromaDB vector store
+- Vector similarity search over PDF content with source attribution
+- Persistent chat history saved to disk (chDB/ClickHouse embedded)
+- Conversation history restored on restart
+- Change detection — only re-ingests new/modified PDFs
+
+**Available tools:**
+| Category | Tools |
+|----------|-------|
+| File/Shell | `read_file`, `write_file`, `list_files`, `run_command` |
+| Knowledge | `search_pdf_knowledge`, `list_pdf_documents` |
+| Browser (via MCP) | `launch_browser`, `navigate_to`, `click_element`, `type_text`, `take_screenshot`, `get_page_source`, and 15 more |
+
+**Key concepts:**
+- Combines RAG + persistent memory + browser automation in one agent
+- All V5 and V7 concepts apply here
+- Tool routing: local tools → in-process, browser tools → MCP server
+
+**Data directories (auto-created):**
+| Directory | Purpose |
+|-----------|---------|
+| `pdf_documents/` | Drop PDF files here for ingestion |
+| `.chromadb/` | ChromaDB vector store |
+| `.chdb/` | chDB (ClickHouse) chat history |
+
+**Run:**
+```bash
+pip3 install -r requirements-v8.txt
+# Optionally add PDFs to pdf_documents/
+python3 agent-v8.py
+```
+
+**Example interaction:**
+```
+You: Analyze kpi-csp11.csv and summarize the key metrics
+🔧 read_file: {"path": "kpi-csp11.csv"}
+   → Contents of kpi-csp11.csv: ...
+🤖 Here's a summary of the key KPI metrics...
+
+You: Search the web for the latest AI agent frameworks
+🔧 launch_browser: {"browser_type": "chrome"}
+   🌐 Browser launched successfully
+🔧 navigate_to: {"url": "https://www.google.com"}
+   🌐 Navigated successfully
+...
+```
+
+
 ## Architecture Evolution
 
 ```
@@ -369,6 +428,10 @@ V6: User → [REPL + Tools API] → Claude → tool_use → local? → execute_t
                                                     → browser? → BrowserManager → Selenium (in-process)
 V7: User → [REPL + Tools API + MCP] → Claude → tool_use → local? → execute_local_tool()
                                                         → browser? → MCP stdio → browseroperator → Selenium
+V8: User → [REPL + Tools API + RAG + MCP] → Claude → tool_use → local/knowledge? → execute_local_tool()
+                                                               → browser? → MCP stdio → browseroperator → Selenium
+                                                                    ↕                         ↕
+                                                               .chromadb/ .chdb/         pdf_documents/
 ```
 
 ## File Reference
@@ -383,11 +446,13 @@ simpleagent/
 ├── agent-v5.py            # + PDF knowledge base, chat history
 ├── agent-v6.py            # + browser automation (direct Selenium)
 ├── agent-v7.py            # + browser automation via MCP
+├── agent-v8.py            # + PDF RAG + chat history + browser via MCP (full-stack)
 ├── requirements-openai.txt # Dependencies for openai example
 ├── requirements.txt       # Dependencies for v1–v4
 ├── requirements-v5.txt    # Dependencies for v5
 ├── requirements-v6.txt    # Dependencies for v6
 ├── requirements-v7.txt    # Dependencies for v7
+├── requirements-v8.txt    # Dependencies for v8
 ├── pdf_documents/         # Drop PDFs here for v5 ingestion
 ├── browseroperator/       # MCP server for browser automation (Selenium)
 │   ├── browser_server.py  # FastMCP server (21 tools)

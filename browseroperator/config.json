@@ -5,7 +5,12 @@
       "github.com",
       "stackoverflow.com",
       "wikipedia.org",
-      "example.com"
+      "example.com",
+      "amazon.in",
+      "amazon.com",
+      "flipkart.com",
+      "www.amazon.in",
+      "www.flipkart.com"
     ],
     "blocked_domains": [
       "localhost",
@@ -23,7 +28,7 @@
     "default_browser": "chrome",
     "window_size": [1280, 720],
     "headless": false,
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "page_load_timeout": 30,
     "implicit_wait": 10,
     "script_timeout": 30
